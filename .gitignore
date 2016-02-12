@@ -1,0 +1,14 @@
+## Core latex/pdflatex auxiliary files:
+*.aux
+*.bbl
+*.dvi
+*.log
+*.nav
+*.out
+*.pdf
+*.snm
+*.toc
+*.blg
+*.eps
+
+

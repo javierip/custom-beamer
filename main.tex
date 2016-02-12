@@ -1,0 +1,97 @@
+\documentclass[]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+\usepackage{listings}
+%\usepackage[spanish]{babel} %use you language
+
+\setbeamertemplate{bibliography item}[text]
+
+\usetheme{UTN-BHI} 
+
+\urldef{\mailsa}\path|jiparraguirre@frbb.utn.edu.ar|
+
+\title[]{Title}
+\subtitle{Subtitle}
+
+\author[J. Iparraguirre] {Javier Iparraguirre}
+
+\institute{
+Universidad Tecnológica Nacional\\
+11 de abril 461, Bahía Blanca, Argentina\\
+\mailsa\\
+\url{http://www.frbb.utn.edu.ar/}}
+
+\date{\today} 
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\section{Section}
+\begin{frame}{Slide}
+  \begin{itemize}
+    \item Item.
+    \item Another item.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Another slide}
+  \begin{itemize}
+    \item Item.
+    \item You can cite \cite{iparraguirre2013speeded}.
+  \end{itemize}
+\end{frame}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{theme/utn-bhi-page-blank}}
+\section{Blank backgound}
+\begin{frame}{Blank backgound}
+Hello there!
+\end{frame}
+}
+
+\section{Tables}
+\begin{frame}{Tables}
+\small{
+\begin{table}
+\centering
+\begin{tabular}{ccc}
+\hline
+Column 1 & Column 2 & Column 3\\
+\hline 
+Content & Content & Content \\
+Content & Content & Content \\ 
+\hline
+\end{tabular}
+\end{table}
+}
+\end{frame} 
+
+\section{Figures}
+\begin{frame}{You can add figures}
+  \begin{figure}
+    \includegraphics[width=0.5\textwidth]{theme/utn-bhi-page} 
+    \caption{A figure}
+  \end{figure}
+\end{frame}
+
+\section{URLs}
+\begin{frame}{You can add links}
+  \begin{itemize}
+    \item \small{\url{www.javieriparraguirre.net/code/}}
+  \end{itemize}
+\end{frame}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{theme/utn-bhi-page-blank}}
+\section{References}
+\begin{frame}[allowframebreaks]{References}
+  \bibliographystyle{alpha}
+  \bibliography{references}
+\end{frame}
+}
+
+\end{document}
