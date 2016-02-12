@@ -1,9 +1,9 @@
-
-for f in `ls *.png`; do
-     convert -density 300 -depth 32 $f ${f%.*}.eps;
+rm *.eps
+for file in `ls *.png`; do
+     convert -density 600 -depth 32 $file ${file%.*}.eps;
 done
 
-for f in `ls *.jpg`; do
-     convert -density 300 -depth 32 $f ${f%.*}.eps;
+for file in `ls *.jpg`; do
+     convert -density 600 -depth 32 $file ${file%.*}.eps;
 done
 
