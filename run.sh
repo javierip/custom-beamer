@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# prepare theme figures
+cd theme/
+sh convert-ALL-jpg-png-to-EPS.sh 
+cd ..
+
+# clean previous files (optional)
 rm *.aux
 rm *.bbl
 rm *.blg
@@ -10,7 +16,8 @@ rm *.out
 rm *.pdf
 rm *.snm
 rm *.toc
-sh theme/convert-ALL-jpg-png-to-EPS.sh 
+
+# compile (full version)
 latex main.tex 
 latex main.tex 
 bibtex main
