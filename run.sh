@@ -16,6 +16,7 @@ rm *.out
 rm *.pdf
 rm *.snm
 rm *.toc
+rm *.eps
 
 # compile (full version)
 latex main.tex 
