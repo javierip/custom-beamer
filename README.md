@@ -7,6 +7,4 @@ The file main.tex is the start point. If you are using a Linux-based machine, op
 
     sh run.sh
 
-If the compilation was successful, you will see a file called **main.pdf**.
-
-The file example.pdf shows a typical output.
+If the compilation was successful, you will see a file called **main.pdf**. The file example.pdf shows a typical output.
