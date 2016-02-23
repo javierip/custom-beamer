@@ -13,7 +13,6 @@ rm *.dvi
 rm *.log
 rm *.nav
 rm *.out
-rm *.pdf
 rm *.snm
 rm *.toc
 rm *.eps
