@@ -9,7 +9,27 @@
 
 \usetheme{UTN-BHI} 
 
-\urldef{\mailsa}\path|jiparraguirre@frbb.utn.edu.ar|
+% Add a section slide. Remove it if you prefer that option.
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+% Code style
+\lstdefinestyle{myC++Style}{
+  language=C++,
+  keywordstyle=\color{black},
+  showspaces=false,
+  showstringspaces=false
+}
+
+\urldef{\email}\path|jiparraguirre@frbb.utn.edu.ar|
 
 \title[]{Custom Beamer Template}
 \subtitle{UTN BHI Design}
@@ -19,7 +39,7 @@
 \institute{
 Universidad Tecnológica Nacional\\
 11 de abril 461, Bahía Blanca, Argentina\\
-\mailsa\\
+\email\\
 \url{http://www.frbb.utn.edu.ar/}}
 
 \date{\today} 
@@ -49,9 +69,9 @@ Universidad Tecnológica Nacional\\
 
 {
 \usebackgroundtemplate{\includegraphics[width=\paperwidth]{theme/utn-bhi-page-blank}}
-\section{Blank backgound}
+\section{Blank background}
 \begin{frame}
-  \frametitle{Blank backgound}
+  \frametitle{Blank background}
   Hello there!
 \end{frame}
 }
@@ -89,6 +109,52 @@ Content & Content & Content \\
   \begin{itemize}
     \item \small{\url{www.javieriparraguirre.net/code/}}
   \end{itemize}
+\end{frame}
+
+\section{Source Code}
+\begin{frame}[fragile]
+  \frametitle{You can add colored source code}
+  \lstset{basicstyle=\small,style=myC++Style}  
+  \begin{lstlisting}
+int main(void) {
+  printf("Hello World!\n");
+  return 0;
+}
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{You can change the font size}
+  \lstset{basicstyle=\Large,style=myC++Style}  
+  \begin{lstlisting}
+int main(void) {
+  printf("Hello World!\n");
+  return 0;
+}
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{The style is not mandatory}
+  \lstset{}
+  \begin{lstlisting}
+int main(void) {
+  printf("Hello World!\n");
+  return 0;
+}
+  \end{lstlisting}
+\end{frame}
+
+\section{Closing Section}
+\begin{frame}  
+  \begin{center}
+  \begin{beamercolorbox}[sep=8pt,center]{title}
+    \Large{Thank you!}
+    \end{beamercolorbox}
+    \huge{Questions?}\\
+    \small{\email}\\
+    \small{\url{www.javieriparraguirre.net/code/}}
+  \end{center}
 \end{frame}
 
 {

@@ -5,9 +5,11 @@
 *.log
 *.nav
 *.out
+*.vrb
 *.snm
 *.toc
 *.blg
 *.eps
 
-
+## the output file
+main.pdf
