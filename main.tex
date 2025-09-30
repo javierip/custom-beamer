@@ -1,9 +1,21 @@
 \documentclass[]{beamer}
 
+% Font encoding and input
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{microtype}
+
+% Core packages
+\usepackage{graphicx}
 \usepackage{url}
 \usepackage{listings}
-%\usepackage[spanish]{babel} %use you language
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+%\usepackage[spanish]{babel} %use your language
 
 \setbeamertemplate{bibliography item}[text]
 
@@ -21,12 +33,21 @@
   \end{frame}
 }
 
-% Code style
+% Enhanced code style
 \lstdefinestyle{myC++Style}{
   language=C++,
-  keywordstyle=\color{black},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black},
+  stringstyle=\color{red},
+  numberstyle=\tiny\color{gray},
   showspaces=false,
-  showstringspaces=false
+  showstringspaces=false,
+  breaklines=true,
+  numbers=left,
+  frame=single,
+  backgroundcolor=\color{gray!10},
+  captionpos=b
 }
 
 \urldef{\email}\path|jiparraguirre@frbb.utn.edu.ar|
@@ -68,7 +89,7 @@ Universidad Tecnológica Nacional\\
 \end{frame}
 
 {
-\usebackgroundtemplate{\includegraphics[width=\paperwidth]{theme/utn-bhi-page-blank}}
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{theme/utn-bhi-page-blank.png}}
 \section{Blank background}
 \begin{frame}
   \frametitle{Blank background}
@@ -83,13 +104,14 @@ Universidad Tecnológica Nacional\\
 \begin{table}
 \centering
 \begin{tabular}{ccc}
-\hline
+\toprule
 Column 1 & Column 2 & Column 3\\
-\hline 
+\midrule 
 Content & Content & Content \\
 Content & Content & Content \\ 
-\hline
+\bottomrule
 \end{tabular}
+\caption{A professional table using booktabs}
 \end{table}
 }
 \end{frame} 
@@ -98,8 +120,9 @@ Content & Content & Content \\
 \begin{frame}
   \frametitle{You can add figures}
   \begin{figure}
-    \includegraphics[width=0.5\textwidth]{theme/utn-bhi-page} 
-    \caption{A figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{theme/utn-bhi-page.png} 
+    \caption{A figure with explicit file extension}
   \end{figure}
 \end{frame}
 
@@ -114,8 +137,8 @@ Content & Content & Content \\
 \section{Source Code}
 \begin{frame}[fragile]
   \frametitle{You can add colored source code}
-  \lstset{basicstyle=\small,style=myC++Style}  
-  \begin{lstlisting}
+  \lstset{style=myC++Style}  
+  \begin{lstlisting}[caption={Hello World in C}]
 int main(void) {
   printf("Hello World!\n");
   return 0;
@@ -125,7 +148,7 @@ int main(void) {
 
 \begin{frame}[fragile]
   \frametitle{You can change the font size}
-  \lstset{basicstyle=\Large,style=myC++Style}  
+  \lstset{style=myC++Style, basicstyle=\ttfamily\Large}  
   \begin{lstlisting}
 int main(void) {
   printf("Hello World!\n");
@@ -135,9 +158,8 @@ int main(void) {
 \end{frame}
 
 \begin{frame}[fragile]
-  \frametitle{The style is not mandatory}
-  \lstset{}
-  \begin{lstlisting}
+  \frametitle{Simple code without styling}
+  \begin{lstlisting}[basicstyle=\ttfamily\small]
 int main(void) {
   printf("Hello World!\n");
   return 0;
@@ -145,20 +167,33 @@ int main(void) {
   \end{lstlisting}
 \end{frame}
 
+\section{Mathematical Expressions}
+\begin{frame}
+  \frametitle{Mathematical formulas}
+  You can include mathematical expressions:
+  \begin{equation}
+    E = mc^2
+  \end{equation}
+  
+  Or inline math like $\alpha + \beta = \gamma$.
+\end{frame}
+
 \section{Closing Section}
 \begin{frame}  
   \begin{center}
-  \begin{beamercolorbox}[sep=8pt,center]{title}
-    \Large{Thank you!}
+    \begin{beamercolorbox}[sep=8pt,center]{title}
+      \Large{Thank you!}
     \end{beamercolorbox}
+    \vspace{1em}
     \huge{Questions?}\\
+    \vspace{1em}
     \small{\email}\\
     \small{\url{www.javieriparraguirre.net/code/}}
   \end{center}
 \end{frame}
 
 {
-\usebackgroundtemplate{\includegraphics[width=\paperwidth]{theme/utn-bhi-page-blank}}
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{theme/utn-bhi-page-blank.png}}
 \section{References}
 \begin{frame}[allowframebreaks]
   \frametitle{References}
