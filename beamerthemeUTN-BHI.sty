@@ -19,11 +19,14 @@
 %   \usetheme{UTN-BHI}
 %   \usetheme[listings]{UTN-BHI}
 %
+% Follows the Manual de Identidad Visual Institucional (UTN-FRBB, FEB 2014).
+% Section references below are to that document.
+%
 % Options
 %   listings        load the listings package and define \lstdefinestyle{utnbhi}
-%   pagebackground  restore the pre-2.0 full-page raster background instead of
-%                   the footline logo (letterboxed, never stretched)
 %   nologo          draw no logo at all, but still reserve its space
+%   nobrandfont     keep beamer's default sans instead of the institutional
+%                   Arial/Helvetica of section 3.2
 %   classicgreen    restore the low-contrast CBD300 frame titles of 1.x
 %
 % Asset location
@@ -38,25 +41,34 @@
 %   {\utnbhinologo \begin{frame}...\end{frame}}   % space is still reserved
 %
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesPackage{beamerthemeUTN-BHI}[2026/09/21 v2.0 UTN-BHI beamer theme]
+\ProvidesPackage{beamerthemeUTN-BHI}[2026/09/21 v2.1 UTN-BHI beamer theme]
 
 \RequirePackage{graphicx}
 \RequirePackage{xcolor}
 
 % ---------------------------------------------------------------- options --
-\newif\ifutnbhi@pagebackground \utnbhi@pagebackgroundfalse
-\newif\ifutnbhi@logo           \utnbhi@logotrue
-\newif\ifutnbhi@listings       \utnbhi@listingsfalse
-\newif\ifutnbhi@classicgreen   \utnbhi@classicgreenfalse
+\newif\ifutnbhi@logo       \utnbhi@logotrue
+\newif\ifutnbhi@listings   \utnbhi@listingsfalse
+\newif\ifutnbhi@classicgreen \utnbhi@classicgreenfalse
+\newif\ifutnbhi@brandfont  \utnbhi@brandfonttrue
 
-\DeclareOptionBeamer{pagebackground}{\utnbhi@pagebackgroundtrue}
 \DeclareOptionBeamer{nologo}{\utnbhi@logofalse}
 \DeclareOptionBeamer{listings}{\utnbhi@listingstrue}
 \DeclareOptionBeamer{classicgreen}{\utnbhi@classicgreentrue}
+\DeclareOptionBeamer{nobrandfont}{\utnbhi@brandfontfalse}
 \ProcessOptionsBeamer
 
 \ifutnbhi@listings
   \RequirePackage{listings}
+\fi
+
+% Section 3.2: Arial is the institutional complementary alphabet for all
+% public communications.  helvet supplies Nimbus Sans, which is metrically
+% compatible with Helvetica and therefore with Arial, and unlike Arial itself
+% it is present in every TeX Live installation.
+\ifutnbhi@brandfont
+  \RequirePackage[scaled]{helvet}
+  \renewcommand{\familydefault}{\sfdefault}
 \fi
 
 \mode<presentation>
@@ -72,6 +84,18 @@
 \providecommand{\utnbhiassetpath}{theme/}
 
 % ---------------------------------------------------------------- palette --
+%
+% Section 2.8 fixes the two institutional colours and gives their RGB values
+% for non-print media, which is what a projected deck is:
+%
+%   Pantone 382          CMYK 29/0/100/0    RGB 203,211,0    #CBD300
+%   Pantone Cool Gray 9  CMYK 58/49/43/11   RGB 118,117,119  #767577
+%
+% Those are greenUTN and grayUTN below and they are used unaltered.  The
+% remaining entries are darker tints of the same two hues, needed because the
+% institutional green is unreadable as text; the prohibition in section 2.5 on
+% changing the institutional colours applies to the isologotipo, which this
+% theme never recolours.
 %
 % Contrast against the white slide background.  WCAG 2.1 asks 4.5:1 for body
 % text and 3:1 for large text; frame titles and the title page are \Large
@@ -152,20 +176,41 @@
 %
 % Drawing the logo in the footline -- rather than painting it into a full-page
 % background -- makes beamer subtract its height from \textheight, so slide
-% content can no longer print straight through the logo.  Tune with
-%   \setlength{\utnbhilogoheight}{0.7cm}
-%   \setlength{\utnbhilogosep}{0.3cm}
+% content can no longer print straight through the logo.  That is also what
+% keeps the area de proteccion of section 2.3 clear of slide text.
 %
-\newlength{\utnbhilogoheight}\setlength{\utnbhilogoheight}{0.5cm}
-\newlength{\utnbhilogosep}\setlength{\utnbhilogosep}{0.28cm}
+% \utnbhilogowidth is the width of the isologotipo itself.  Section 2.6 sets
+% 3 cm as its minimum for positive versions, which is the default here.
+%
+%   \setlength{\utnbhilogowidth}{3.5cm}
+%
+% The image drawn is wider than that, because the master file carries the
+% reserve inside its own frame (1.05a above, 1.22a below, 1.69a at the sides,
+% a = height of the "arañita").  The two factors below convert between the
+% isologotipo and that frame: the master is 2618x854 px with the isologotipo
+% 1876 px wide.  Do not crop the asset -- cropping destroys the reserve.
+%
+\newlength{\utnbhilogowidth}\setlength{\utnbhilogowidth}{3cm}
+\newlength{\utnbhilogosep}\setlength{\utnbhilogosep}{0pt}
+\newlength{\utnbhi@framewidth}
+\newlength{\utnbhi@frameheight}
+\def\utnbhi@reservefactor{1.39552}   % 2618/1876
+\def\utnbhi@frameaspect{0.32620}     % 854/2618
+
+\newcommand{\utnbhi@measureframe}{%
+  \setlength{\utnbhi@framewidth}{\utnbhi@reservefactor\utnbhilogowidth}%
+  \setlength{\utnbhi@frameheight}{\utnbhi@frameaspect\utnbhi@framewidth}%
+}
 
 \newcommand{\utnbhi@logobox}{%
+  \utnbhi@measureframe
   \hbox to\paperwidth{\hfil%
-    \includegraphics[height=\utnbhilogoheight]{\utnbhiassetpath utn-bhi-logo}%
+    \includegraphics[width=\utnbhi@framewidth]{\utnbhiassetpath utn-bhi-logo}%
   \hfil}%
 }
 \newcommand{\utnbhi@spacerbox}{%
-  \hbox to\paperwidth{\hfil\rule{0pt}{\utnbhilogoheight}\hfil}%
+  \utnbhi@measureframe
+  \hbox to\paperwidth{\hfil\rule{0pt}{\utnbhi@frameheight}\hfil}%
 }
 
 \ifutnbhi@logo
@@ -188,17 +233,6 @@
   \utnbhi@footcontent%
   \vskip\utnbhilogosep%
 }
-
-% Legacy full-page raster background.  height=\paperheight letterboxes the
-% 4:3 image instead of stretching it 33% wider on a 16:9 deck.
-\ifutnbhi@pagebackground
-  \utnbhinologo
-  \usebackgroundtemplate{%
-    \hbox to\paperwidth{\hfil
-      \includegraphics[height=\paperheight]{\utnbhiassetpath utn-bhi-page}%
-    \hfil}%
-  }
-\fi
 
 % --------------------------------------------------------------- features --
 \setbeamertemplate{headline}{}

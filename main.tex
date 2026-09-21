@@ -24,7 +24,7 @@
 %   \providecommand{\utnbhiassetpath}{../custom-beamer/theme/}
 %
 % The listings option loads the listings package and defines the utnbhi
-% listing style.  Other options: pagebackground, nologo, classicgreen.
+% listing style.  Other options: nologo, nobrandfont, classicgreen.
 \usetheme[listings]{UTN-BHI}
 
 % Apply the listing style shipped with the theme to every listing.
@@ -88,10 +88,9 @@ Universidad Tecnológica Nacional\\
     \item[\texttt{listings}] loads \texttt{listings} and defines
       \texttt{\textbackslash lstdefinestyle\{utnbhi\}}. Without it the theme
       pulls in nothing extra.
-    \item[\texttt{pagebackground}] restores the pre-2.0 full-page raster
-      background instead of the footline logo. The image is letterboxed, so
-      the logo keeps its proportions in 16:9.
     \item[\texttt{nologo}] draws no logo, but still reserves its space.
+    \item[\texttt{nobrandfont}] keeps Beamer's default sans instead of the
+      institutional Arial/Helvetica of section 3.2 of the identity manual.
     \item[\texttt{classicgreen}] restores the original \texttt{\#CBD300}
       frame titles (1.63:1 against white --- not recommended).
   \end{description}
@@ -144,10 +143,10 @@ Universidad Tecnológica Nacional\\
       \midrule
       \texttt{listings} & Loads \texttt{listings} and the \texttt{utnbhi}
         listing style. & Any deck that shows source code. \\
-      \texttt{pagebackground} & Paints the legacy raster background and drops
-        the footline logo. & Matching an existing 4:3 deck exactly. \\
       \texttt{nologo} & Reserves the footline space but draws nothing. &
         Decks that add their own branding. \\
+      \texttt{nobrandfont} & Keeps Beamer's default sans instead of Arial. &
+        Decks that must match older material. \\
       \bottomrule
     \end{tabular}
     \caption{A professional table using booktabs and \texttt{p\{\}} columns}
