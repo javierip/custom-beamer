@@ -1,46 +1,59 @@
-#!/bin/bash
+#!/bin/sh
 
-# This script compiles the LaTeX presentation without user interaction
-# It uses pdflatex and ensures all output files are placed in the 'output' directory.
+# This script compiles the LaTeX presentation without user interaction.
+# All output files are placed in the 'output' directory.
+#
+#   sh run.sh            compile main.tex
+#   sh run.sh slides     compile slides.tex
 
 set -e # Exit immediately if a command exits with a non-zero status
 
 OUTPUT_DIR="output"
-MAIN_FILE="main"
+MAIN_FILE="${1:-main}"
 
-# Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 
 echo "--- Starting LaTeX compilation ---"
 
-# Clean previous files (suppress errors if files don't exist)
-rm -f *.aux *.bbl *.blg *.dvi *.log *.nav *.out *.snm *.toc *.eps
+# Clean previous build output. Only the output directory is touched: the
+# repository root holds generated assets (theme/*.eps) that must survive.
 rm -f "$OUTPUT_DIR"/*
 
-# Use pdflatex with non-interactive mode to avoid prompts
-echo "--- Compiling LaTeX (pass 1) ---"
-pdflatex -interaction=nonstopmode -output-directory="$OUTPUT_DIR" "$MAIN_FILE.tex"
+if command -v latexmk >/dev/null 2>&1; then
+    echo "--- Using latexmk ---"
+    latexmk -pdf -interaction=nonstopmode -halt-on-error \
+            -output-directory="$OUTPUT_DIR" "$MAIN_FILE.tex"
+else
+    echo "--- latexmk not found, falling back to three pdflatex passes ---"
 
-# Run bibtex (suppress output and errors)
-echo "--- Running BibTeX ---"
-bibtex "$OUTPUT_DIR/$MAIN_FILE" || true
+    echo "--- Compiling LaTeX (pass 1) ---"
+    pdflatex -interaction=nonstopmode -output-directory="$OUTPUT_DIR" "$MAIN_FILE.tex"
 
-# Run pdflatex again to resolve citations
-echo "--- Compiling LaTeX (pass 2) ---"
-pdflatex -interaction=nonstopmode -output-directory="$OUTPUT_DIR" "$MAIN_FILE.tex"
+    echo "--- Running BibTeX ---"
+    bibtex "$OUTPUT_DIR/$MAIN_FILE" || true
 
-# Final pass to ensure everything is resolved
-echo "--- Compiling LaTeX (final pass) ---"
-pdflatex -interaction=nonstopmode -output-directory="$OUTPUT_DIR" "$MAIN_FILE.tex"
+    echo "--- Compiling LaTeX (pass 2) ---"
+    pdflatex -interaction=nonstopmode -output-directory="$OUTPUT_DIR" "$MAIN_FILE.tex"
+
+    echo "--- Compiling LaTeX (final pass) ---"
+    pdflatex -interaction=nonstopmode -output-directory="$OUTPUT_DIR" "$MAIN_FILE.tex"
+fi
 
 echo "---"
 echo "Compilation complete!"
 echo "Output PDF: $OUTPUT_DIR/$MAIN_FILE.pdf"
 
-# Check if PDF was created successfully
 if [ -f "$OUTPUT_DIR/$MAIN_FILE.pdf" ]; then
-    echo "✓ PDF generated successfully"
+    echo "OK - PDF generated successfully"
 else
-    echo "✗ PDF generation failed - check the log file: $OUTPUT_DIR/$MAIN_FILE.log"
+    echo "FAILED - check the log file: $OUTPUT_DIR/$MAIN_FILE.log"
     exit 1
+fi
+
+# Report overfull boxes; they are the usual cause of text running off a slide.
+# Note that beamer does not warn about a frame whose body is simply taller
+# than the slide, so a clean run here is not a promise that nothing overflows.
+OVERFULL=$(grep -c 'Overfull \\[hv]box' "$OUTPUT_DIR/$MAIN_FILE.log" || true)
+if [ "${OVERFULL:-0}" -gt 0 ]; then
+    echo "Warning: $OVERFULL overfull box(es) in $OUTPUT_DIR/$MAIN_FILE.log"
 fi

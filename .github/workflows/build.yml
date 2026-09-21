@@ -1,0 +1,68 @@
+name: build
+
+on:
+  push:
+    branches: [master, dev]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  contrast:
+    name: contrast (WCAG 4.5:1)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: python3 theme/check-contrast.py
+
+  latex:
+    name: pdflatex (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: '16:9'
+            aspectratio: '169'
+          - name: '4:3'
+            aspectratio: '43'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-base \
+            texlive-latex-recommended \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            texlive-bibtex-extra \
+            latexmk
+
+      - name: Select aspect ratio
+        run: |
+          sed -i 's/aspectratio=[0-9]*/aspectratio=${{ matrix.aspectratio }}/' main.tex
+          head -1 main.tex
+
+      - name: Compile
+        run: sh run.sh
+
+      - name: Report overfull boxes
+        run: |
+          # Not a hard gate: a fraction-of-a-point overfull box is cosmetic,
+          # and beamer stays silent about a frame body that is simply taller
+          # than the slide, so this cannot be the only check either.
+          if grep -n 'Overfull \\[hv]box' output/main.log; then
+            COUNT=$(grep -c 'Overfull \\[hv]box' output/main.log)
+            echo "::warning::$COUNT overfull box(es) in the ${{ matrix.name }} deck"
+          else
+            echo "no overfull boxes"
+          fi
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: main-${{ matrix.aspectratio }}
+          path: output/main.pdf
