@@ -11,21 +11,139 @@
  %
  % Inspired by previous work by Sebastian Pipping:
  % https://blog.hartwork.org/?p=435
- 
-% Default theme as a base
-\usetheme{default}
+ %
+%%
+%
+% UTN-BHI beamer theme.
+%
+%   \usetheme{UTN-BHI}
+%   \usetheme[listings]{UTN-BHI}
+%
+% Follows the Manual de Identidad Visual Institucional (UTN-FRBB, FEB 2014).
+% Section references below are to that document.
+%
+% Options
+%   listings        load the listings package and define \lstdefinestyle{utnbhi}
+%   nologo          draw no logo at all, but still reserve its space
+%   nobrandfont     keep beamer's default sans instead of the institutional
+%                   Arial/Helvetica of section 3.2
+%   classicgreen    restore the low-contrast CBD300 frame titles of 1.x
+%
+% Asset location
+%   The theme looks for its images in \utnbhiassetpath, which defaults to
+%   "theme/" (relative to the compilation directory).  To use the theme from
+%   a sibling checkout without copying files, define it BEFORE \usetheme:
+%
+%       \providecommand{\utnbhiassetpath}{../custom-beamer/theme/}
+%       \usetheme{UTN-BHI}
+%
+% Per-frame logo suppression
+%   {\utnbhinologo \begin{frame}...\end{frame}}   % space is still reserved
+%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemeUTN-BHI}[2026/09/21 v2.1 UTN-BHI beamer theme]
 
-%colors
-\definecolor{greenUTN}{rgb}{0.796,0.827,0.0}
-\definecolor{grayUTN}{rgb}{0.462,0.459,0.466}
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}
 
-%backgound
-\usebackgroundtemplate{\includegraphics[width=\paperwidth,height=\paperheight]{theme/utn-bhi-page}}
+% ---------------------------------------------------------------- options --
+\newif\ifutnbhi@logo       \utnbhi@logotrue
+\newif\ifutnbhi@listings   \utnbhi@listingsfalse
+\newif\ifutnbhi@classicgreen \utnbhi@classicgreenfalse
+\newif\ifutnbhi@brandfont  \utnbhi@brandfonttrue
 
-% Font
-\setbeamercolor{frametitle}{bg=white, fg=greenUTN}
-\setbeamercolor{title}{bg=white, fg=greenUTN}
+\DeclareOptionBeamer{nologo}{\utnbhi@logofalse}
+\DeclareOptionBeamer{listings}{\utnbhi@listingstrue}
+\DeclareOptionBeamer{classicgreen}{\utnbhi@classicgreentrue}
+\DeclareOptionBeamer{nobrandfont}{\utnbhi@brandfontfalse}
+\ProcessOptionsBeamer
+
+\ifutnbhi@listings
+  \RequirePackage{listings}
+\fi
+
+% Section 3.2: Arial is the institutional complementary alphabet for all
+% public communications.  helvet supplies Nimbus Sans, which is metrically
+% compatible with Helvetica and therefore with Arial, and unlike Arial itself
+% it is present in every TeX Live installation.
+\ifutnbhi@brandfont
+  \RequirePackage[scaled]{helvet}
+  \renewcommand{\familydefault}{\sfdefault}
+\fi
+
+\mode<presentation>
+
+% ------------------------------------------------------------ base themes --
+% The supported mechanism; \usetheme must not be called from inside a theme.
+\useinnertheme{default}
+\useoutertheme{default}
+\usecolortheme{default}
+\usefonttheme{default}
+
+% ----------------------------------------------------------------- assets --
+\providecommand{\utnbhiassetpath}{theme/}
+
+% ---------------------------------------------------------------- palette --
+%
+% Section 2.8 fixes the two institutional colours and gives their RGB values
+% for non-print media, which is what a projected deck is:
+%
+%   Pantone 382          CMYK 29/0/100/0    RGB 203,211,0    #CBD300
+%   Pantone Cool Gray 9  CMYK 58/49/43/11   RGB 118,117,119  #767577
+%
+% Those are greenUTN and grayUTN below and they are used unaltered.  The
+% remaining entries are darker tints of the same two hues, needed because the
+% institutional green is unreadable as text; the prohibition in section 2.5 on
+% changing the institutional colours applies to the isologotipo, which this
+% theme never recolours.
+%
+% Contrast against the white slide background.  WCAG 2.1 asks 4.5:1 for body
+% text and 3:1 for large text; frame titles and the title page are \Large
+% (17.3 pt) and projected metres wide, so they are held to the 3:1 bar.
+%
+%   greenUTN       CBD300   1.63:1   accent only -- bullets, the logo
+%   greenUTNtitle  929800   3.13:1   frame titles, title page  (large text)
+%   greenUTNdark   6F7500   4.98:1   captions, toc, keywords   (normal text)
+%   grayUTN        767577   4.58:1   body text on white
+%   grayUTNdark    5A5A5C   6.88:1   text on tinted backgrounds (blocks, code)
+%   alertUTN       A03000   7.20:1   \alert, alerted blocks, code strings
+%
+% greenUTNtitle is the brightest point on the logo's own hue that still clears
+% 3:1, so titles stay recognisably brand green instead of going olive.
+%
+% grayUTN passes on white but has almost no headroom, which is why anything
+% sitting on a tint uses grayUTNdark instead.
+%
+\definecolor{greenUTN}{HTML}{CBD300}
+\definecolor{greenUTNtitle}{HTML}{929800}
+\definecolor{greenUTNdark}{HTML}{6F7500}
+\definecolor{grayUTN}{HTML}{767577}
+\definecolor{grayUTNdark}{HTML}{5A5A5C}
+\definecolor{alertUTN}{HTML}{A03000}
+\definecolor{utnbhiblockbg}{HTML}{EFEFE6}
+\definecolor{utnbhicodebg}{HTML}{F5F5F0}
+\definecolor{utnbhicodecomment}{HTML}{5F6B3A}
+
+% The colour of frame titles and of the title page.  CBD300 measured 1.63:1
+% against white, i.e. unreadable on a projector; classicgreen brings it back
+% for decks that depend on the old look.
+\ifutnbhi@classicgreen
+  \colorlet{utnbhi@titlefg}{greenUTN}
+\else
+  \colorlet{utnbhi@titlefg}{greenUTNtitle}
+\fi
+
+% ---------------------------------------------------------------- colours --
 \setbeamercolor{normal text}{bg=white, fg=grayUTN}
+\setbeamercolor{frametitle}{bg=white, fg=utnbhi@titlefg}
+\setbeamercolor{framesubtitle}{bg=white, fg=grayUTN}
+\setbeamercolor{title}{bg=white, fg=utnbhi@titlefg}
+\setbeamercolor{titlelike}{bg=white, fg=utnbhi@titlefg}
+% \normalsize, so it is held to 4.5:1 rather than the large-text 3:1.
+\setbeamercolor{subtitle}{fg=greenUTNdark}
+\setbeamercolor{author}{fg=grayUTN}
+\setbeamercolor{institute}{fg=grayUTN}
+\setbeamercolor{date}{fg=grayUTN}
 
 % Structure
 \setbeamertemplate{items}[circle]
@@ -34,8 +152,122 @@
 \setbeamercolor{itemize item}{fg=greenUTN}
 \setbeamercolor{itemize subitem}{fg=greenUTN}
 \setbeamercolor{itemize subsubitem}{fg=greenUTN}
+\setbeamercolor{section in toc}{fg=greenUTNdark}
+\setbeamercolor{subsection in toc}{fg=grayUTN}
 
-% Features
+% Emphasis and blocks.  Beamer's stock red alert and its blue blocks clash
+% with the green/gray palette; every pair below measures at least 4.5:1.
+\setbeamercolor{alerted text}{fg=alertUTN}
+\setbeamercolor{block title}{bg=greenUTNdark, fg=white}
+\setbeamercolor{block body}{bg=utnbhiblockbg, fg=grayUTNdark}
+\setbeamercolor{block title alerted}{bg=alertUTN, fg=white}
+\setbeamercolor{block body alerted}{bg=utnbhiblockbg, fg=grayUTNdark}
+\setbeamercolor{block title example}{bg=grayUTNdark, fg=white}
+\setbeamercolor{block body example}{bg=utnbhiblockbg, fg=grayUTNdark}
+
+\setbeamercolor{caption name}{fg=greenUTNdark}
+\setbeamercolor{bibliography item}{fg=grayUTN}
+\setbeamercolor{bibliography entry author}{fg=grayUTN}
+\setbeamercolor{bibliography entry title}{fg=grayUTNdark}
+\setbeamercolor{bibliography entry note}{fg=grayUTN}
+\setbeamercolor{button}{bg=greenUTNdark, fg=white}
+
+% ---------------------------------------------------------- logo footline --
+%
+% Drawing the logo in the footline -- rather than painting it into a full-page
+% background -- makes beamer subtract its height from \textheight, so slide
+% content can no longer print straight through the logo.  That is also what
+% keeps the area de proteccion of section 2.3 clear of slide text.
+%
+% \utnbhilogowidth is the width of the isologotipo itself.  Section 2.6 sets
+% 3 cm as its minimum for positive versions, which is the default here.
+%
+%   \setlength{\utnbhilogowidth}{3.5cm}
+%
+% The image drawn is wider than that, because the master file carries the
+% reserve inside its own frame (1.05a above, 1.22a below, 1.69a at the sides,
+% a = height of the "arañita").  The two factors below convert between the
+% isologotipo and that frame: the master is 2618x854 px with the isologotipo
+% 1876 px wide.  Do not crop the asset -- cropping destroys the reserve.
+%
+\newlength{\utnbhilogowidth}\setlength{\utnbhilogowidth}{3cm}
+\newlength{\utnbhilogosep}\setlength{\utnbhilogosep}{0pt}
+\newlength{\utnbhi@framewidth}
+\newlength{\utnbhi@frameheight}
+\def\utnbhi@reservefactor{1.39552}   % 2618/1876
+\def\utnbhi@frameaspect{0.32620}     % 854/2618
+
+\newcommand{\utnbhi@measureframe}{%
+  \setlength{\utnbhi@framewidth}{\utnbhi@reservefactor\utnbhilogowidth}%
+  \setlength{\utnbhi@frameheight}{\utnbhi@frameaspect\utnbhi@framewidth}%
+}
+
+\newcommand{\utnbhi@logobox}{%
+  \utnbhi@measureframe
+  \hbox to\paperwidth{\hfil%
+    \includegraphics[width=\utnbhi@framewidth]{\utnbhiassetpath utn-bhi-logo}%
+  \hfil}%
+}
+\newcommand{\utnbhi@spacerbox}{%
+  \utnbhi@measureframe
+  \hbox to\paperwidth{\hfil\rule{0pt}{\utnbhi@frameheight}\hfil}%
+}
+
+\ifutnbhi@logo
+  \newcommand{\utnbhi@footcontent}{\utnbhi@logobox}
+\else
+  \newcommand{\utnbhi@footcontent}{\utnbhi@spacerbox}
+\fi
+
+% Suppress / restore the logo for a group of frames.  The space stays
+% reserved, so the text area does not jump between slides.
+\newcommand{\utnbhinologo}{\renewcommand{\utnbhi@footcontent}{\utnbhi@spacerbox}}
+\newcommand{\utnbhiwithlogo}{\renewcommand{\utnbhi@footcontent}{\utnbhi@logobox}}
+
+% \nointerlineskip keeps TeX from adding \baselineskip glue before the box.
+% Without it the footline is taller in the frame than it measured as when
+% beamer sized the text area, and the logo drifts off the page.
+\setbeamertemplate{footline}{%
+  \vskip\utnbhilogosep%
+  \nointerlineskip%
+  \utnbhi@footcontent%
+  \vskip\utnbhilogosep%
+}
+
+% --------------------------------------------------------------- features --
 \setbeamertemplate{headline}{}
 \setbeamertemplate{navigation symbols}{}
-\setbeamertemplate{footline}{}
+
+% --------------------------------------------------------------- listings --
+\ifutnbhi@listings
+  % Language-agnostic, and small enough that two of these fit side by side in
+  % a two-column comparison slide.  Apply it with
+  %     \lstset{style=utnbhi, language=C}
+  \lstdefinestyle{utnbhi}{%
+    basicstyle=\ttfamily\scriptsize\color{grayUTNdark},
+    keywordstyle=\bfseries\color{greenUTNdark},
+    commentstyle=\itshape\color{utnbhicodecomment},
+    stringstyle=\color{alertUTN},
+    numberstyle=\ttfamily\tiny\color{grayUTNdark},
+    numbers=left,
+    numbersep=7pt,
+    columns=flexible,
+    keepspaces=true,
+    breaklines=true,
+    breakatwhitespace=true,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    rulecolor=\color{grayUTN!35},
+    backgroundcolor=\color{utnbhicodebg},
+    captionpos=b,
+    xleftmargin=1.6em,
+    framexleftmargin=1.6em,
+    aboveskip=0.7em,
+    belowskip=0.7em,
+  }
+\fi
+
+\mode<all>

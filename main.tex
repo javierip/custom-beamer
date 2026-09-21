@@ -1,4 +1,4 @@
-\documentclass[]{beamer}
+\documentclass[aspectratio=169]{beamer}
 
 % Font encoding and input
 \usepackage[T1]{fontenc}
@@ -8,8 +8,8 @@
 % Core packages
 \usepackage{graphicx}
 \usepackage{url}
-\usepackage{listings}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{xcolor}
 \usepackage{amsmath}
 \usepackage{amsfonts}
@@ -19,7 +19,16 @@
 
 \setbeamertemplate{bibliography item}[text]
 
-\usetheme{UTN-BHI} 
+% If the theme lives in a sibling directory instead of ./theme, say so here,
+% before \usetheme:
+%   \providecommand{\utnbhiassetpath}{../custom-beamer/theme/}
+%
+% The listings option loads the listings package and defines the utnbhi
+% listing style.  Other options: nologo, nobrandfont, classicgreen.
+\usetheme[listings]{UTN-BHI}
+
+% Apply the listing style shipped with the theme to every listing.
+\lstset{style=utnbhi, language=C}
 
 % Add a section slide. Remove it if you prefer that option.
 \AtBeginSection[]{
@@ -31,23 +40,6 @@
   \end{beamercolorbox}
   \vfill
   \end{frame}
-}
-
-% Enhanced code style
-\lstdefinestyle{myC++Style}{
-  language=C++,
-  basicstyle=\ttfamily\small,
-  keywordstyle=\color{blue}\bfseries,
-  commentstyle=\color{green!60!black},
-  stringstyle=\color{red},
-  numberstyle=\tiny\color{gray},
-  showspaces=false,
-  showstringspaces=false,
-  breaklines=true,
-  numbers=left,
-  frame=single,
-  backgroundcolor=\color{gray!10},
-  captionpos=b
 }
 
 \urldef{\email}\path|jiparraguirre@frbb.utn.edu.ar|
@@ -63,7 +55,7 @@ Universidad Tecnológica Nacional\\
 \email\\
 \url{http://www.frbb.utn.edu.ar/}}
 
-\date{\today} 
+\date{\today}
 
 \begin{document}
 
@@ -88,41 +80,86 @@ Universidad Tecnológica Nacional\\
   \end{itemize}
 \end{frame}
 
+\section{Theme options}
+\begin{frame}
+  \frametitle{Theme options}
+  \small
+  \begin{description}
+    \item[\texttt{listings}] loads \texttt{listings} and defines
+      \texttt{\textbackslash lstdefinestyle\{utnbhi\}}. Without it the theme
+      pulls in nothing extra.
+    \item[\texttt{nologo}] draws no logo, but still reserves its space.
+    \item[\texttt{nobrandfont}] keeps Beamer's default sans instead of the
+      institutional Arial/Helvetica of section 3.2 of the identity manual.
+    \item[\texttt{classicgreen}] restores the original \texttt{\#CBD300}
+      frame titles (1.63:1 against white --- not recommended).
+  \end{description}
+  \vfill
+  For a single group of frames, \texttt{\textbackslash utnbhinologo} hides the
+  logo without changing the text area.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Emphasis and blocks}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{A block}
+        Block colours come from the brand palette instead of Beamer's stock
+        blue.
+      \end{block}
+      \begin{exampleblock}{An example block}
+        Every block pair measures at least 4.5:1.
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{alertblock}{An alert block}
+        \alert{Alerted text} uses a dark brand-compatible red.
+      \end{alertblock}
+      \vspace{1em}
+      Body text stays \texttt{grayUTN}; anything on a tint switches to the
+      darker \texttt{grayUTNdark}.
+    \end{column}
+  \end{columns}
+\end{frame}
+
 {
-\usebackgroundtemplate{\includegraphics[width=\paperwidth]{theme/utn-bhi-page-blank.png}}
+\utnbhinologo
 \section{Blank background}
 \begin{frame}
   \frametitle{Blank background}
-  Hello there!
+  Hello there! This frame hides the logo but keeps its space reserved.
 \end{frame}
 }
 
 \section{Tables}
 \begin{frame}
   \frametitle{Tables}
-\small{
-\begin{table}
-\centering
-\begin{tabular}{ccc}
-\toprule
-Column 1 & Column 2 & Column 3\\
-\midrule 
-Content & Content & Content \\
-Content & Content & Content \\ 
-\bottomrule
-\end{tabular}
-\caption{A professional table using booktabs}
-\end{table}
-}
-\end{frame} 
+  \small
+  \begin{table}
+    \centering
+    \begin{tabular}{l p{0.32\textwidth} p{0.32\textwidth}}
+      \toprule
+      Option & What it does & When to use it \\
+      \midrule
+      \texttt{listings} & Loads \texttt{listings} and the \texttt{utnbhi}
+        listing style. & Any deck that shows source code. \\
+      \texttt{nologo} & Reserves the footline space but draws nothing. &
+        Decks that add their own branding. \\
+      \texttt{nobrandfont} & Keeps Beamer's default sans instead of Arial. &
+        Decks that must match older material. \\
+      \bottomrule
+    \end{tabular}
+    \caption{A professional table using booktabs and \texttt{p\{\}} columns}
+  \end{table}
+\end{frame}
 
 \section{Figures}
 \begin{frame}
   \frametitle{You can add figures}
   \begin{figure}
     \centering
-    \includegraphics[width=0.5\textwidth]{theme/utn-bhi-page.png} 
-    \caption{A figure with explicit file extension}
+    \includegraphics[width=0.45\textwidth]{\utnbhiassetpath utn-bhi-logo}
+    \caption{A figure loaded through \texttt{\textbackslash utnbhiassetpath}}
   \end{figure}
 \end{frame}
 
@@ -137,34 +174,49 @@ Content & Content & Content \\
 \section{Source Code}
 \begin{frame}[fragile]
   \frametitle{You can add colored source code}
-  \lstset{style=myC++Style}  
   \begin{lstlisting}[caption={Hello World in C}]
 int main(void) {
+  /* the classic */
   printf("Hello World!\n");
   return 0;
 }
-  \end{lstlisting}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Two listings side by side}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{lstlisting}[language=C]
+int sum(const int *a, int n) {
+  int total = 0;
+  for (int i = 0; i < n; i++)
+    total += a[i];
+  return total;
+}
+\end{lstlisting}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{lstlisting}[language=Python]
+def total(values):
+    """Sum a sequence."""
+    result = 0
+    for value in values:
+        result += value
+    return result
+\end{lstlisting}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
   \frametitle{You can change the font size}
-  \lstset{style=myC++Style, basicstyle=\ttfamily\Large}  
-  \begin{lstlisting}
+  \begin{lstlisting}[basicstyle=\ttfamily\large\color{grayUTNdark}]
 int main(void) {
   printf("Hello World!\n");
   return 0;
 }
-  \end{lstlisting}
-\end{frame}
-
-\begin{frame}[fragile]
-  \frametitle{Simple code without styling}
-  \begin{lstlisting}[basicstyle=\ttfamily\small]
-int main(void) {
-  printf("Hello World!\n");
-  return 0;
-}
-  \end{lstlisting}
+\end{lstlisting}
 \end{frame}
 
 \section{Mathematical Expressions}
@@ -174,12 +226,12 @@ int main(void) {
   \begin{equation}
     E = mc^2
   \end{equation}
-  
+
   Or inline math like $\alpha + \beta = \gamma$.
 \end{frame}
 
 \section{Closing Section}
-\begin{frame}  
+\begin{frame}
   \begin{center}
     \begin{beamercolorbox}[sep=8pt,center]{title}
       \Large{Thank you!}
@@ -193,7 +245,7 @@ int main(void) {
 \end{frame}
 
 {
-\usebackgroundtemplate{\includegraphics[width=\paperwidth]{theme/utn-bhi-page-blank.png}}
+\utnbhinologo
 \section{References}
 \begin{frame}[allowframebreaks]
   \frametitle{References}
