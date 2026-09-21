@@ -1,7 +1,8 @@
 # Custom Beamer Template
 
 Beamer theme following UTN BHI (Universidad Tecnológica Nacional - Bahía Blanca)
-design guidelines.
+design guidelines. See [CHANGELOG.md](CHANGELOG.md) for what changed between
+releases; v2.0.0 is a breaking release and lists the migration steps.
 
 ![Sample slide](sample-slide.png)
 

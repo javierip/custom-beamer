@@ -1,0 +1,71 @@
+name: release
+
+# Pushing a vX.Y.Z tag builds both aspect ratios and publishes the GitHub
+# Release with the PDFs attached. The repository does not commit build output,
+# so the release is the only place the compiled deck is available.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-base \
+            texlive-latex-recommended \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            texlive-bibtex-extra \
+            latexmk
+
+      - name: Check contrast
+        run: python3 theme/check-contrast.py
+
+      - name: Build 16:9
+        run: |
+          sh run.sh
+          mv output/main.pdf utn-bhi-sample-169.pdf
+
+      - name: Build 4:3
+        run: |
+          sed -i 's/aspectratio=[0-9]*/aspectratio=43/' main.tex
+          sh run.sh
+          mv output/main.pdf utn-bhi-sample-43.pdf
+
+      - name: Extract release notes for this tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          # The section for this version, up to the next top-level heading.
+          awk -v ver="$VERSION" '
+            /^## / {
+              if (found) exit
+              h = $2; sub(/^v/, "", h)
+              if (h == ver) { found = 1; next }
+            }
+            found { print }
+          ' CHANGELOG.md > NOTES.md
+          if [ ! -s NOTES.md ]; then
+            echo "No CHANGELOG.md section found for $GITHUB_REF_NAME" >&2
+            exit 1
+          fi
+          cat NOTES.md
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --notes-file NOTES.md \
+            utn-bhi-sample-169.pdf \
+            utn-bhi-sample-43.pdf
